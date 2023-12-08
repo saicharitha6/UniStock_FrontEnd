@@ -1,20 +1,34 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Router, Scene, Stack } from "react-native-router-flux";
+import Products from "./screens/Products";
+import ProductInfo from "./screens/ProductInfo";
+import { Provider as PaperProvider } from "react-native-paper";
 
 export default function App() {
+  const getCartId = () => {
+    axios.post(`${baseURL}/store/carts`).then((res) => {
+      AsyncStorage.setItem("cart_id", res.data.cart.id);
+    });
+  };
+  const checkCartId = async () => {
+    const cartId = await AsyncStorage.getItem("cart_id");
+    if (!cartId) {
+      getCartId();
+    }
+  };
+
+  useEffect(() => {
+    checkCartId();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <PaperProvider>
+      <Router>
+        <Stack key="root">
+          <Scene key="products" component={Products} hideNavBar />
+          <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
+          <Scene key="cart" component={Cart} hideNavBar />
+        </Stack>
+      </Router>
+    </PaperProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
