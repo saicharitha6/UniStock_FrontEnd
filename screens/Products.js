@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, TouchableOpacity, View, TextInput } from "react-native";
 import React, { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import { widthToDp } from "rn-responsive-screen";
@@ -10,11 +10,29 @@ import { Feather } from "@expo/vector-icons";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
+  const [search, setSearch] = useState('');
 
   function fetchProducts() {
     axios.get(`${baseURL}/store/products`).then((res) => {
       if (res.data.products.length > 0) setProducts(res.data.products);
     });
+  }
+
+  function searchFilterFunction(text) {
+    let searchQuery = {
+      "q" : text
+     };
+     setSearch(text);
+    axios({
+      method: 'post',
+      url: `${baseURL}/store/products/search`,
+      data: searchQuery, 
+      headers: {
+      'Content-Type': 'application/json'
+      }, 
+    }).then((res) => {
+      setProducts(res.data.hits);
+    }); 
   }
 
   useEffect(() => {
@@ -23,6 +41,24 @@ export default function Products() {
   return (
     <View style={styles.container}>
       <Header title="Medusa's Store" />
+      <View
+        style={styles.searchBar}
+      >
+        {/* search Icon */}
+        <Feather
+          name="search"
+          size={20}
+          color="black"
+          style={{ marginLeft: 1 }}
+        />
+        {/* Input field */}
+        <TextInput
+          style={styles.input}
+          placeholder="Search"
+          value={search}
+          onChangeText={(text) => searchFilterFunction(text)}
+        />
+      </View>
       <ScrollView>
         <View style={styles.products}>
           {products.map((product) => (
@@ -75,4 +111,23 @@ const styles = StyleSheet.create({
     padding: widthToDp(2),
     justifyContent: "center",
   },
+  searchBar:{
+    margin: 15,
+    justifyContent: "flex-start",
+    alignItems: "center",
+    flexDirection: "row",
+    width: "90%",
+    shadowColor: "#000",
+    borderRadius: 10,
+    marginBottom: "4px",
+    shadowOffset: {
+      width: 2,
+      height: 5,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 6.84,
+    elevation: 5,
+    padding: 10,
+    backgroundColor: "#fff",
+  }
 });
