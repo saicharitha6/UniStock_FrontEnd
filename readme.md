@@ -49,14 +49,17 @@ Once you're up and running with Create React Native App, visit [the tutorial on 
 ## Set environment variables
 
 - `cp .env.example .env `
-- update the EXPO_PUBLIC_API_URL with your ngrok url
+- update the `EXPO_PUBLIC_API_URL` with your ngrok url
+
+## Add dependency
+- `yarn add <package-name>`
 
 ## Usage
 
 - `npx create-expo-app` Create a new native React app.
-- `yarn run ios` -- (`npx expo run:ios`) Build the iOS App (requires a MacOS computer).
-- `yarn run android` -- (`npx expo run:android`) Build the Android App.
-- `yarn run web` -- (`npx expo start --web`) Run the website in your browser.
+- `yarn ios` -- (`npx expo run:ios`) Build the iOS App (requires a MacOS computer).
+- `yarn android` -- (`npx expo run:android`) Build the Android App.
+- `yarn web` -- (`npx expo start --web`) Run the website in your browser.
 
 ### Templates
 
