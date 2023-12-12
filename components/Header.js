@@ -1,6 +1,8 @@
 import { View, Image, StyleSheet, Text } from "react-native";
 import React from "react";
 import { widthToDp } from "rn-responsive-screen";
+import { Feather } from "@expo/vector-icons";
+import { Actions } from "react-native-router-flux";
 
 export default function Header({ title }) {
   return (
@@ -12,6 +14,12 @@ export default function Header({ title }) {
         style={styles.logo}
       />
       <Text style={styles.title}>{title}</Text>
+      {/* <Feather
+          name="shopping-cart"
+          size={24}
+          color="#C37AFF"
+          onPress={() => Actions.cart()}
+        /> */}
     </View>
   );
 }

@@ -1,24 +1,97 @@
-import { View, Text, StyleSheet, Image } from "react-native";
-import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
+import React, { useState } from "react";
 import { heightToDp, width, widthToDp } from "rn-responsive-screen";
+import { ScrollView } from "react-native-gesture-handler";
+import { AntDesign } from "@expo/vector-icons";
+import axios from "axios";
+import { Actions } from "react-native-router-flux";
+import baseURL from "../constants/url";
 
-export default function CartItem({ product }) {
+export default function CartItem({ item, cartId, onChangeCart }) {
+  let [quantity, setQuantity] = useState(item.quantity);
+  let [product, setProduct] = useState(item);
+  function removeItem(productId) {
+    axios
+      .delete(`${baseURL}/store/carts/${cartId}/line-items/${productId}`)
+      .then(({ data }) => {
+        if (data.cart) {
+          onChangeCart(data);
+        }
+      });
+  }
+  function updateQty(itemId) {
+    if (item.quantity !== quantity && quantity <= 3) {
+      axios
+        .post(`${baseURL}/store/carts/${cartId}/line-items/${itemId}`, {
+          quantity,
+        })
+        .then(({ data }) => {
+          if (data.cart) {
+            const updatedProduct = data.cart.items.find(
+              (itm) => itm.id === itemId
+            );
+            setProduct(updatedProduct);
+            setQuantity(updatedProduct.quantity);
+            onChangeCart(data);
+          }
+        })
+        .catch((error) => console.log(error));
+    }
+  }
+
   return (
-    <View style={styles.container}>
-      <Image source={{ uri: product.thumbnail }} style={styles.image} />
-      <View style={styles.info}>
-        <View>
-          <Text style={styles.title}>{product.title}</Text>
-          <Text style={styles.description}>
-            {product.description} • ${product.unit_price / 100}
-          </Text>
-        </View>
-        <View style={styles.footer}>
-          <Text style={styles.price}>${product.total / 100}</Text>
-          <Text style={styles.quantity}>x{product.quantity}</Text>
+    <ScrollView>
+      <View style={styles.container}>
+        <Image source={{ uri: product.thumbnail }} style={styles.image} />
+        <View style={styles.info}>
+          <View>
+            <Text style={styles.title}>{product.title}</Text>
+            <Text style={styles.description}>
+              {product.description} • ${product.unit_price / 100}
+            </Text>
+          </View>
+          <View style={styles.footer}>
+            <Text style={styles.price}>${product.total / 100}</Text>
+            <AntDesign
+              key={product.id}
+              name="minussquareo"
+              size={24}
+              color="black"
+              onPress={() => {
+                setQuantity(--quantity);
+                updateQty(product.id);
+              }}
+              disabled={quantity === 1}
+            />
+            <Text style={styles.quantity}>x{quantity}</Text>
+            <AntDesign
+              key={product.id}
+              name="plussquareo"
+              size={24}
+              color="black"
+              onPress={() => {
+                setQuantity(++quantity);
+                updateQty(product.id);
+              }}
+              disabled={quantity === 3}
+            />
+            <AntDesign
+              name="delete"
+              size={24}
+              color="black"
+              onPress={() => removeItem(product.id)}
+            />
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 

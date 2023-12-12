@@ -7,21 +7,26 @@ import CartItem from "../components/CartItem";
 import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { width, widthToDp } from "rn-responsive-screen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "../components/Button";
 import { Actions } from "react-native-router-flux";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Cart() {
   const [cart, setCart] = useState([]);
+  const [cart_id, setCartId] = useState(null);
 
   const fetchCart = async () => {
     // Get the cart id from the device storage
     const cartId = await AsyncStorage.getItem("cart_id");
+    setCartId(cartId);
     // Fetch the products from the cart API using the cart id
     axios.get(`${baseURL}/store/carts/${cartId}`).then(({ data }) => {
       // Set the cart state to the products in the cart
       setCart(data.cart);
     });
+  };
+  const onChangeCart = (data) => {
+    setCart(data.cart);
   };
 
   useEffect(() => {
@@ -30,7 +35,6 @@ export default function Cart() {
   }, []);
   return (
     // SafeAreaView is used to avoid the notch on the phone
-
     <SafeAreaView style={[styles.container]}>
       {/* SchrollView is used in order to scroll the content */}
       <ScrollView contentContainerStyle={styles.container}>
@@ -39,7 +43,11 @@ export default function Cart() {
 
         {/* Mapping the products into the Cart component */}
         {cart?.items?.map((product) => (
-          <CartItem product={product} />
+          <CartItem
+            item={product}
+            cartId={cart_id}
+            onChangeCart={onChangeCart}
+          />
         ))}
       </ScrollView>
       {/* Creating a seperate view to show the total amount and checkout button */}

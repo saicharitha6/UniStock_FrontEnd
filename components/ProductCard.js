@@ -4,8 +4,6 @@ import { widthToDp, heightToDp } from "rn-responsive-screen";
 import Button from "./Button";
 
 export default function ProductCard({ key, product }) {
-  console.log(product.title)
-  console.log(product.variants[0].prices[1]?.amount);
   return (
     <View style={styles.container} key={key}>
       <Image

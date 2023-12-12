@@ -1,3 +1,2 @@
-const baseURL = "http://192.168.0.121:9000";
-
+const baseURL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:9000";
 export default baseURL;

@@ -36,8 +36,8 @@ export default function ProductInfo({ productId }) {
       <ScrollView>
         {productInfo && (
           <View>
-            <Images images={productInfo.images} />
-            <MetaInfo product={productInfo} />
+            <Images key={productId} images={productInfo.images} />
+            <MetaInfo key={productId} product={productInfo} />
           </View>
         )}
       </ScrollView>
