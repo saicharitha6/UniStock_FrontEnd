@@ -52,6 +52,7 @@ Once you're up and running with Create React Native App, visit [the tutorial on 
 - update the `EXPO_PUBLIC_API_URL` with your ngrok url
 
 ## Add dependency
+
 - `yarn add <package-name>`
 
 ## Usage
@@ -60,6 +61,11 @@ Once you're up and running with Create React Native App, visit [the tutorial on 
 - `yarn ios` -- (`npx expo run:ios`) Build the iOS App (requires a MacOS computer).
 - `yarn android` -- (`npx expo run:android`) Build the Android App.
 - `yarn web` -- (`npx expo start --web`) Run the website in your browser.
+
+## EXPO build apk
+
+- `eas build --profile development --platform android` build and generate apk file
+- `npx expo start --dev-client` start the application with dev client
 
 ### Templates
 
