@@ -85,29 +85,17 @@ const SignUpForm = () => {
   const handleSubmit = async () => {
     try {
       if (firstNameIsValid && lastNameIsValid && emailIsValid && passwordIsValid) {
-        console.log(
-          "firstName, lastName, email , password",
-          enteredFirstName,
-          enteredLastName,
-          enteredEmail,
-          enteredPassword
-        );
-
         firstNameReset();
         lastNameReset();
         emailReset();
         passwordReset();
-
         const response = await authenticationHandler({
           firstName: enteredFirstName,
           lastName: enteredLastName,
           email: enteredEmail,
           password: enteredPassword,
         });
-
-        Alert.alert("Successfully Signed Up");
         console.log("Response ->", response);
-        // Navigate or perform other actions as needed
       } else {
         Alert.alert("Invalid Data Entered or Fill all Fields");
       }
@@ -116,30 +104,6 @@ const SignUpForm = () => {
       Alert.alert("Invalid Data Entered or Fill all Fields");
     }
   };
-
-
-    // if (
-    //   firstNameIsValid &&
-    //   lastNameIsValid &&
-    //   emailIsValid &&
-    //   passwordIsValid
-    // ) {
-    //   console.log(
-    //     "firstName, lastName, email , password",
-    //     enteredFirstName,
-    //     enteredLastName,
-    //     enteredEmail,
-    //     enteredPassword
-    //   );
-    //   emailReset();
-    //   passwordReset();
-    //   lastNameReset();
-    //   firstNameReset();
-    //   Alert.alert("Successfully Signed Up");
-    // } else {
-    //   Alert.alert("Invalid Data Entered or Fill all Fields");
-    // }
-
 
   return (
     <View style={styles.container}>
