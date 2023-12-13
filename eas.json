@@ -1,6 +1,7 @@
 {
   "cli": {
-    "version": ">= 5.9.1"
+    "version": ">= 5.9.1",
+    "appVersionSource": "remote"
   },
   "build": {
     "development": {
@@ -10,8 +11,14 @@
     "preview": {
       "distribution": "internal"
     },
-    "production": {}
-    
+    "production": {
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://amitav.ngrok.io",
+        "APP_ICON": "./assets/icon.png",
+        "APP_NAME": "UniStock(dev)"
+      }
+    }
   },
   "submit": {
     "production": {}
