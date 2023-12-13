@@ -68,19 +68,23 @@ const SignUpForm = () => {
     // Password-specific validation
   });
 
-  function authenticationHandler(userData) {
-    return axios({
-      method: "post",
-      url: `${baseURL}/store/customers`,
-      data: userData,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  }
+  const authenticationHandler = async (userData) => {
+    try {
+      const response = await axios.post(`${baseURL}/store/customers`, userData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-  const handleSubmit = () => {
-    if (firstNameIsValid && lastNameIsValid && emailIsValid && passwordIsValid) {
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      if (firstNameIsValid && lastNameIsValid && emailIsValid && passwordIsValid) {
         console.log(
           "firstName, lastName, email , password",
           enteredFirstName,
@@ -88,39 +92,30 @@ const SignUpForm = () => {
           enteredEmail,
           enteredPassword
         );
+
         firstNameReset();
         lastNameReset();
         emailReset();
         passwordReset();
-    
-        authenticationHandler({
+
+        const response = await authenticationHandler({
           firstName: enteredFirstName,
           lastName: enteredLastName,
           email: enteredEmail,
           password: enteredPassword,
-        })
-          .then((res) => {
-            // Authentication success
-            if (res.data !== undefined) {
-              Alert.alert("Successfully Signed Up");
-              console.log("Response ->", res.data);
-              Actions.products();
-            } else {
-              console.log("Unexpected response structure");
-            }
-          })
-          .catch((err) => {
-            // Authentication failure
-            console.log(
-              "Error ->",
-              err.response ? err.response.data : err.message
-            );
-            Alert.alert("Invalid Data Entered or Fill all Fields");
-          });
+        });
+
+        Alert.alert("Successfully Signed Up");
+        console.log("Response ->", response);
+        // Navigate or perform other actions as needed
       } else {
         Alert.alert("Invalid Data Entered or Fill all Fields");
       }
-
+    } catch (error) {
+      console.error("Error ->", error.response ? error.response.data : error.message);
+      Alert.alert("Invalid Data Entered or Fill all Fields");
+    }
+  };
 
 
     // if (
@@ -144,7 +139,7 @@ const SignUpForm = () => {
     // } else {
     //   Alert.alert("Invalid Data Entered or Fill all Fields");
     // }
-  };
+
 
   return (
     <View style={styles.container}>
