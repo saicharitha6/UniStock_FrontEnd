@@ -110,7 +110,12 @@ const SignInForm = () => {
       <View style={styles.forgetPasswordContainer}>
         <Text style={styles.forgetPassword}>Forget password</Text>
       </View>
-      <Button title="Login" onPress={handleSubmit} textSize={18} />
+      <Button
+        title="Login"
+        onPress={handleSubmit}
+        textSize={18}
+        style={styles.button}
+      />
       <View style={styles.signUpText}>
         <Text>Don't have an account? </Text>
         <Text style={styles.link}>Sign Up</Text>
