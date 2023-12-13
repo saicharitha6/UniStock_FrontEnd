@@ -53,7 +53,6 @@ const SignInForm = () => {
 
   const handleSubmit = () => {
     if (emailIsValid && passwordIsValid) {
-      console.log("email , password", enteredEmail, enteredPassword);
       emailReset();
       passwordReset();
 
