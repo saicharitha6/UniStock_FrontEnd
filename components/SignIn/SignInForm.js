@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, Alert } from "react-native";
 import Button from "../Button";
 import useInput from "../../hooks/use-Input";
@@ -7,8 +7,11 @@ import Input from "../Input";
 import { Actions } from "react-native-router-flux";
 import axios from "axios";
 import baseURL from "../../constants/url";
+import ErrMessage from "../ErrorMessage";
 
 const SignInForm = () => {
+  const [errMessage, setErrMessage] = useState("");
+
   const {
     value: enteredEmail,
     isValid: emailIsValid,
@@ -44,6 +47,9 @@ const SignInForm = () => {
       },
     });
   }
+  function endMessage() {
+    setErrMessage("");
+  }
 
   const handleSubmit = () => {
     if (emailIsValid && passwordIsValid) {
@@ -56,28 +62,17 @@ const SignInForm = () => {
         password: enteredPassword,
       })
         .then((res) => {
-          // Authentication success
           if (res.data !== undefined) {
-            // axios.get(`${baseURL}/store/auth`).then((res) => {
-            //   console.log("We have authenticated->", res.data);
-            // });
-            Alert.alert("Login successful");
-            console.log("Response ->", res.data);
             Actions.products();
           } else {
-            console.log("Unexpected response structure");
+            setErrMessage("Unexpected response structure");
           }
         })
         .catch((err) => {
-          // Authentication failure
-          console.log(
-            "Error ->",
-            err.response ? err.response.data : err.message
-          );
-          Alert.alert("Invalid Credentials");
+          setErrMessage("Invalid Credentials");
         });
     } else {
-      Alert.alert("Invalid Credentials");
+      setErrMessage("Invalid data");
     }
   };
 
@@ -120,6 +115,7 @@ const SignInForm = () => {
         <Text>Don't have an account? </Text>
         <Text style={styles.link}>Sign Up</Text>
       </View>
+      <ErrMessage type="authentication" text={errMessage} onEnd={endMessage} />
     </View>
   );
 };
