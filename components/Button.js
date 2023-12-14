@@ -9,7 +9,6 @@ export default function Button({ title, onPress, style, textSize, large }) {
         style={[
           styles.text,
           { fontSize: textSize ? textSize : widthToDp(3.5) },
-          ,
         ]}
         onPress={onPress}
       >
@@ -22,19 +21,20 @@ export default function Button({ title, onPress, style, textSize, large }) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#C37AFF",
-    padding: 5,
     width: widthToDp(20),
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 59,
   },
   large: {
-    width: "100%",
-    marginTop: 10,
     height: widthToDp(12),
+    marginTop: 10,
   },
   text: {
     color: "#fff",
     fontWeight: "bold",
+    padding: 10,
+    width: "100%",
+    textAlign: "center",
   },
 });

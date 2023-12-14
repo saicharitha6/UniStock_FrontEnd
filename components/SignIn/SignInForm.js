@@ -55,7 +55,6 @@ const SignInForm = () => {
     if (emailIsValid && passwordIsValid) {
       emailReset();
       passwordReset();
-
       authenticationHandler({
         email: enteredEmail,
         password: enteredPassword,
@@ -68,7 +67,14 @@ const SignInForm = () => {
           }
         })
         .catch((err) => {
-          setErrMessage("Invalid Credentials");
+          const statusCode = err.response.status;
+          console.log("status", statusCode);
+          console.log("status", err.response.data);
+          if (statusCode === 401) {
+            setErrMessage("Wrong password");
+          } else if (statusCode === 400) {
+            setErrMessage("Email not found");
+          }
         });
     } else {
       setErrMessage("Invalid data");
@@ -101,6 +107,7 @@ const SignInForm = () => {
         onBlur={validatePasswordHandler}
         onFocus={passwordFocusHandler}
       />
+      <Text>{ErrMessage}</Text>
       <View style={styles.forgetPasswordContainer}>
         <Text style={styles.forgetPassword}>Forget password</Text>
       </View>
@@ -146,7 +153,7 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "#007bff",
     borderRadius: 5,
-    padding: 10,
+    // padding: 10,
     alignItems: "center",
     justifyContent: "center",
   },
