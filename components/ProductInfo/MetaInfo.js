@@ -38,12 +38,12 @@ export default function MetaInfo({ product }) {
         <Text style={styles.title}>{product.title}</Text>
         <View>
           <Text style={styles.price}>
-            ${product.variants[0].prices[1].amount / 100}
+          ₹{product.variants[0].prices[1].amount / 100}
           </Text>
           <Text style={styles.star}>⭐⭐⭐</Text>
         </View>
       </View>
-      <Text style={styles.heading}>Available Sizes</Text>
+      {/* <Text style={styles.heading}>Available Sizes</Text> */}
       <View style={styles.row}>
         {product.options[0].values.map((size, index) => (
           <TouchableOpacity onPress={() => setActiveSize(index)}>
