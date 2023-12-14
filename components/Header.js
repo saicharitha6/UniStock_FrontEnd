@@ -66,49 +66,50 @@ export default function Header({
           />
         </TouchableOpacity>
       )}
-
-      {isVisible ? (
-        <>
-          <View style={styles.addToCart}>
-            <Text style={styles.cart_count}>{count > 0 ? count : ""}</Text>
-            <Feather
-              name="shopping-cart"
-              size={24}
-              color="white"
-              onPress={() => Actions.cart()}
-            />
-          </View>
-          <View style={styles.topBar}>
-            <TouchableWithoutFeedback onPress={toggleDropdown}>
-              <Feather name="user" size={24} color="white" />
-            </TouchableWithoutFeedback>
-            <Modal
-              transparent={true}
-              visible={isDropdownVisible}
-              onRequestClose={() => setIsDropdownVisible(false)}
-            >
-              <TouchableWithoutFeedback
-                onPress={() => setIsDropdownVisible(false)}
-              >
-                <View style={styles.overlay} />
+      <View style={styles.sideBar}>
+        {isVisible ? (
+          <>
+            <View style={styles.addToCart}>
+              <Text style={styles.cart_count}>{count > 0 ? count : ""}</Text>
+              <Feather
+                name="shopping-cart"
+                size={24}
+                color="white"
+                onPress={() => Actions.cart()}
+              />
+            </View>
+            <View style={styles.topBar}>
+              <TouchableWithoutFeedback onPress={toggleDropdown}>
+                <Feather name="user" size={24} color="white" />
               </TouchableWithoutFeedback>
-              <View style={styles.dropdown}>
-                {/* <TouchableOpacity onPress={handleCart}>
+              <Modal
+                transparent={true}
+                visible={isDropdownVisible}
+                onRequestClose={() => setIsDropdownVisible(false)}
+              >
+                <TouchableWithoutFeedback
+                  onPress={() => setIsDropdownVisible(false)}
+                >
+                  <View style={styles.overlay} />
+                </TouchableWithoutFeedback>
+                <View style={styles.dropdown}>
+                  {/* <TouchableOpacity onPress={handleCart}>
                   <Text style={styles.dropdownElements}>View Cart</Text>
                 </TouchableOpacity> */}
-                <TouchableOpacity onPress={handleOrders}>
-                  <Text style={styles.dropdownElements}>View Orders</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleLogout}>
-                  <Text style={styles.dropdownElements}>Logout</Text>
-                </TouchableOpacity>
-              </View>
-            </Modal>
-          </View>
-        </>
-      ) : (
-        <View></View>
-      )}
+                  <TouchableOpacity onPress={handleOrders}>
+                    <Text style={styles.dropdownElements}>View Orders</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={handleLogout}>
+                    <Text style={styles.dropdownElements}>Logout</Text>
+                  </TouchableOpacity>
+                </View>
+              </Modal>
+            </View>
+          </>
+        ) : (
+          <View></View>
+        )}
+      </View>
     </View>
   );
 }
@@ -118,6 +119,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: widthToDp(100),
     backgroundColor: "#C37AFF",
+    alignItems: "center",
+    alignContent: "space-between",
+    // paddingHorizontal: widthToDp(2),
   },
   buttons: {
     flexDirection: "row",
@@ -127,7 +131,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
-    // width: widthToDp(100),
+    width: widthToDp(50),
     marginBottom: 10,
   },
   title: {
@@ -147,9 +151,9 @@ const styles = StyleSheet.create({
 
   addToCart: {
     flexDirection: "row-reverse",
-    position: "absolute",
-    bottom: 10,
-    right: 100,
+    // position: "absolute",
+    // bottom: 10,
+    // right: 100,
     width: widthToDp(12),
     height: widthToDp(12),
     alignItems: "center",
@@ -161,11 +165,21 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
   },
+  sideBar: {
+    width: widthToDp(50),
+    position: "absolute",
+    right: 5,
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    paddingRight: 5,
+  },
+
   topBar: {
     flexDirection: "row",
-    position: "absolute",
-    top: 10,
-    right: 10,
+    // position: "absolute",
+    // top: 10,
+    // right: 10,
   },
   overlay: {
     flex: 1,
