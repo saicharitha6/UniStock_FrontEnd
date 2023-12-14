@@ -39,7 +39,7 @@ export default function Cart() {
       {/* SchrollView is used in order to scroll the content */}
       <ScrollView contentContainerStyle={styles.container}>
         {/* Using the reusable header component */}
-        <Header title="My Cart" />
+        <Header title="My Cart" isVisible={false} />
 
         {/* Mapping the products into the Cart component */}
         {cart?.items?.map((product) => (
