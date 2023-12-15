@@ -119,7 +119,7 @@ const SignInForm = () => {
       />
       <View style={styles.signUpText}>
         <Text>Don't have an account? </Text>
-        <Text style={styles.link}>Sign Up</Text>
+        <Text style={styles.link} onPress={()=>Actions.SignUp()}>Sign Up</Text>
       </View>
       <ErrMessage type="authentication" text={errMessage} onEnd={endMessage} />
     </View>
