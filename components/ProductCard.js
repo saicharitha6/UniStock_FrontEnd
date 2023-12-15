@@ -19,8 +19,8 @@ export default function ProductCard({ key, product }) {
           ₹{product.variants[0].prices[1]?.amount?product.variants[0].prices[1]?.amount / 100 : 50}
         </Text>
 
-        <Button
-          title="BUY"/>
+        {/* <Button
+          title="BUY"/> */}
       </View>
     </View>
   );
