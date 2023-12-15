@@ -1,16 +1,8 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-  Alert,
-} from "react-native";
+import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import Button from "../Button";
 import useInput from "../hook/use-Input";
 import { Actions } from "react-native-router-flux";
-import { ScrollView } from "react-native-gesture-handler";
 import Input from "../Input";
 import axios from "axios";
 import baseURL from "../../constants/url";
@@ -18,6 +10,8 @@ import ErrMessage from "../ErrorMessage";
 
 const SignUpForm = () => {
   const [errMessage, setErrMessage] = useState("");
+  const [passwordErrorVisible, setPasswordErrorVisible] = useState(false);
+
   const {
     value: enteredFirstName,
     isValid: firstNameIsValid,
@@ -56,6 +50,7 @@ const SignUpForm = () => {
   } = useInput({
     validateValue: (value) => value.trim().length >= 3 && value.includes("@"),
   });
+
   const {
     value: enteredPassword,
     isValid: passwordIsValid,
@@ -75,6 +70,7 @@ const SignUpForm = () => {
   function endMessage() {
     setErrMessage("");
   }
+
   const authenticationHandler = async (userData) => {
     return axios({
       method: "post",
@@ -116,7 +112,7 @@ const SignUpForm = () => {
         .catch((err) => {
           const statusCode = err.response.status;
           console.log("status", statusCode);
-          console.log("status", err.response.data); 
+          console.log("status", err.response.data);
           if (statusCode === 422) {
             setErrMessage("Email Already Exists");
           } else if (statusCode === 400) {
@@ -131,8 +127,16 @@ const SignUpForm = () => {
   };
 
   return (
-    <ScrollView>
     <View style={styles.container}>
+      <TouchableOpacity
+        onPress={() => Actions.pop()}
+        style={{ position: "absolute", left: 20, top: 50, zIndex: 1 }}
+      >
+        <Image
+          source={require("../../assets/back-arrow.png")}
+          style={{ width: 30, height: 30 }}
+        />
+      </TouchableOpacity>
       <Text style={styles.text}>Quick Sign-Up</Text>
       <TouchableOpacity style={styles.customButton}>
         <Image
@@ -178,23 +182,33 @@ const SignUpForm = () => {
         secureTextEntry
         value={enteredPassword}
         onChangeText={(text) => passwordChangeHandler(text)}
-        onBlur={validatePasswordHandler}
-        onFocus={passwordFocusHandler}
+        onBlur={() => {
+          validatePasswordHandler();
+          setPasswordErrorVisible(true);
+        }}
+        onFocus={() => {
+          passwordFocusHandler();
+          setPasswordErrorVisible(false);
+        }}
       />
-      <Text style={styles.text1}>
-        Use at least one symbol, one numeric, and ten characters
-      </Text>
+      {passwordErrorVisible && (
+        <Text style={styles.error}>
+          Use at least one symbol, one numeric, and ten characters
+        </Text>
+      )}
       <Button
         title="Sign Up for Unistock"
         onPress={handleSubmit}
         style={styles.button}
         textSize={18}
       />
-    
-       <ErrMessage  style={styles.signUpText} type="authentication" text={errMessage} onEnd={endMessage} />
-    
+      <ErrMessage
+        style={styles.signUpText}
+        type="authentication"
+        text={errMessage}
+        onEnd={endMessage}
+      />
     </View>
-    </ScrollView>
   );
 };
 
@@ -205,8 +219,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
     padding: 20,
-    paddingTop:0,
-    width: "100%",
+    paddingTop: 0,
+    width: "90%",
   },
   title: {
     fontSize: 24,
@@ -259,7 +273,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     // Add any styles needed for the red blinking effect
   },
-
   button: {
     width: "70%",
     backgroundColor: "#007bff",
@@ -267,13 +280,13 @@ const styles = StyleSheet.create({
     padding: 7,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom:20
+    marginBottom: 20,
+    marginTop: 30,
   },
-
   signUpText: {
     flexDirection: "row",
     marginTop: 50,
-    justifyContent:'flex-end'
+    justifyContent: "flex-end",
   },
   invalid: {
     width: "100%",
@@ -283,10 +296,6 @@ const styles = StyleSheet.create({
     borderColor: "red",
     marginBottom: 10,
   },
-  signUpText: {
-    flexDirection: "col",
-    marginTop: 40,
-  }
 });
 
 export default SignUpForm;
