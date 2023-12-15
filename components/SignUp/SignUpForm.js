@@ -9,11 +9,15 @@ import {
 } from "react-native";
 import Button from "../Button";
 import useInput from "../hook/use-Input";
+import { Actions } from "react-native-router-flux";
+import { ScrollView } from "react-native-gesture-handler";
 import Input from "../Input";
 import axios from "axios";
 import baseURL from "../../constants/url";
+import ErrMessage from "../ErrorMessage";
 
 const SignUpForm = () => {
+  const [errMessage, setErrMessage] = useState("");
   const {
     value: enteredFirstName,
     isValid: firstNameIsValid,
@@ -26,7 +30,7 @@ const SignUpForm = () => {
   } = useInput({
     validateValue: (value) => value.trim().length >= 5,
   });
-  
+
   const {
     value: enteredLastName,
     isValid: lastNameIsValid,
@@ -68,44 +72,66 @@ const SignUpForm = () => {
     // Password-specific validation
   });
 
+  function endMessage() {
+    setErrMessage("");
+  }
   const authenticationHandler = async (userData) => {
-    try {
-      const response = await axios.post(`${baseURL}/store/customers`, userData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+    return axios({
+      method: "post",
+      url: `${baseURL}/store/customers`,
+      data: userData,
+      headers: {
+        "Content-Type": "application/json",
+        // 'Accept':"*/*"
+      },
+    });
   };
 
   const handleSubmit = async () => {
-    try {
-      if (firstNameIsValid && lastNameIsValid && emailIsValid && passwordIsValid) {
-        firstNameReset();
-        lastNameReset();
-        emailReset();
-        passwordReset();
-        const response = await authenticationHandler({
-          firstName: enteredFirstName,
-          lastName: enteredLastName,
-          email: enteredEmail,
-          password: enteredPassword,
+    if (
+      firstNameIsValid &&
+      lastNameIsValid &&
+      emailIsValid &&
+      passwordIsValid
+    ) {
+      // Proceed with user registration
+      firstNameReset();
+      lastNameReset();
+      emailReset();
+      passwordReset();
+
+      authenticationHandler({
+        first_name: enteredFirstName,
+        last_name: enteredLastName,
+        email: enteredEmail,
+        password: enteredPassword,
+      })
+        .then((response) => {
+          if (response.data !== undefined) {
+            Actions.SignIn();
+          } else {
+            setErrMessage("Unexpected response structure");
+          }
+        })
+        .catch((err) => {
+          const statusCode = err.response.status;
+          console.log("status", statusCode);
+          console.log("status", err.response.data); 
+          if (statusCode === 422) {
+            setErrMessage("Email Already Exists");
+          } else if (statusCode === 400) {
+            setErrMessage("Client Error");
+          } else if (statusCode === 404) {
+            setErrMessage("Not Found error");
+          }
         });
-        console.log("Response ->", response);
-      } else {
-        Alert.alert("Invalid Data Entered or Fill all Fields");
-      }
-    } catch (error) {
-      console.error("Error ->", error.response ? error.response.data : error.message);
-      Alert.alert("Invalid Data Entered or Fill all Fields");
+    } else {
+      setErrMessage("Invalid Data Entered or Fill all Fields");
     }
   };
 
   return (
+    <ScrollView>
     <View style={styles.container}>
       <Text style={styles.text}>Quick Sign-Up</Text>
       <TouchableOpacity style={styles.customButton}>
@@ -147,11 +173,7 @@ const SignUpForm = () => {
         secureTextEntry={false}
       />
       <Input
-        style={[
-          // styles.input,
-          // (passwordIsFocused || passwordIsValid) && styles.input,
-          passwordIsFocused && !passwordIsValid && styles.invalid,
-        ]}
+        style={[passwordIsFocused && !passwordIsValid && styles.invalid]}
         placeholder="Password"
         secureTextEntry
         value={enteredPassword}
@@ -162,25 +184,28 @@ const SignUpForm = () => {
       <Text style={styles.text1}>
         Use at least one symbol, one numeric, and ten characters
       </Text>
-
       <Button
         title="Sign Up for Unistock"
         onPress={handleSubmit}
         style={styles.button}
         textSize={18}
       />
+    
+       <ErrMessage  style={styles.signUpText} type="authentication" text={errMessage} onEnd={endMessage} />
+    
     </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "#fff",
-    marginTop: 10,
     padding: 20,
+    paddingTop:0,
     width: "100%",
   },
   title: {
@@ -234,26 +259,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     // Add any styles needed for the red blinking effect
   },
-  // input: {
-  //   width: "100%",
-  //   padding: 10,
-  //   borderRadius: 5,
-  //   borderWidth: 1,
-  //   borderColor: "#ccc",
-  //   marginBottom: 10,
-  // },
+
   button: {
     width: "70%",
     backgroundColor: "#007bff",
     borderRadius: 5,
-    padding: 10,
+    padding: 7,
     alignItems: "center",
     justifyContent: "center",
+    marginBottom:20
   },
 
   signUpText: {
     flexDirection: "row",
-    margin: 40,
+    marginTop: 50,
+    justifyContent:'flex-end'
   },
   invalid: {
     width: "100%",
@@ -263,6 +283,10 @@ const styles = StyleSheet.create({
     borderColor: "red",
     marginBottom: 10,
   },
+  signUpText: {
+    flexDirection: "col",
+    marginTop: 40,
+  }
 });
 
 export default SignUpForm;
