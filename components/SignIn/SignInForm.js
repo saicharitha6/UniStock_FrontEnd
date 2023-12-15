@@ -35,9 +35,7 @@ const SignInForm = () => {
     isFocused: passwordIsFocused,
     reset: passwordReset,
   } = useInput({
-    validateValue: (value) =>
-      value.trim().length >= 10 &&
-      /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]+$/.test(value),
+    validateValue: (value) => value.trim().length >= 8,
   });
 
   function authenticationHandler(loginData) {
@@ -81,9 +79,17 @@ const SignInForm = () => {
           console.log("status", err.response.data);
 
           if (statusCode === 401) {
-            emailReset();
-            passwordReset();
-            setErrMessage("Invalid credentials. Incorrect email or password");
+            axios.get(`${baseURL}/store/auth/${enteredEmail}`).then((res) => {
+              console.log("Email->", res.data.exists);
+              if (res.data.exists) {
+                passwordReset();
+                setErrMessage("Incorrect password");
+              } else {
+                emailReset();
+                passwordReset();
+                setErrMessage("Invalid credentials.");
+              }
+            });
           } else if (statusCode === 400) {
             setErrMessage("Invalid data");
             emailReset();
