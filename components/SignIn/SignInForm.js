@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Alert, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 import Button from "../Button";
 import useInput from "../../hooks/use-Input";
 import WelcomeText from "./WelcomeText";
@@ -52,6 +59,11 @@ const SignInForm = () => {
     setErrMessage("");
   }
 
+  function resetAll() {
+    passwordReset();
+    emailReset();
+  }
+
   const handleSubmit = () => {
     setLoading(true); // Set loading to true before making the request
 
@@ -67,40 +79,35 @@ const SignInForm = () => {
             Actions.products();
           } else {
             setErrMessage("Unexpected response structure");
-            emailReset();
-            passwordReset();
+            resetAll();
           }
         })
         .catch((err) => {
           setLoading(false); // Set loading to false after failed request
 
           const statusCode = err.response.status;
-          console.log("status", statusCode);
-          console.log("status", err.response.data);
 
           if (statusCode === 401) {
+            setLoading(true);
             axios.get(`${baseURL}/store/auth/${enteredEmail}`).then((res) => {
-              console.log("Email->", res.data.exists);
+              setLoading(false);
               if (res.data.exists) {
                 passwordReset();
                 setErrMessage("Incorrect password");
               } else {
-                emailReset();
-                passwordReset();
+                resetAll();
                 setErrMessage("Invalid credentials.");
               }
             });
           } else if (statusCode === 400) {
             setErrMessage("Invalid data");
-            emailReset();
-            passwordReset();
+            resetAll();
           }
         });
     } else {
       setLoading(false); // Set loading to false if validation fails
       setErrMessage("Invalid data");
-      emailReset();
-      passwordReset();
+      resetAll();
     }
   };
 
@@ -134,12 +141,11 @@ const SignInForm = () => {
       <View style={styles.forgetPasswordContainer}>
         <Text style={styles.forgetPassword}>Forget password</Text>
       </View>
-      <Button
-        title="Login"
-        onPress={handleSubmit}
-        textSize={18}
-        style={styles.button}
-      />
+      <TouchableOpacity style={styles.touchableOpacity} onPress={handleSubmit}>
+        <View style={styles.button}>
+          <Text style={styles.buttonText}>Login</Text>
+        </View>
+      </TouchableOpacity>
       <View style={styles.signUpText}>
         <Text>Don't have an account? </Text>
         <Text style={styles.link} onPress={() => Actions.SignUp()}>
@@ -179,6 +185,11 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+    padding: 10,
+    textAlign: "center",
+  },
+  touchableOpacity: {
+    width: "100%",
   },
   link: {
     // marginTop: 20,

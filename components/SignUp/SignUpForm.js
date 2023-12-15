@@ -1,16 +1,25 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import Button from "../Button";
-import useInput from "../hook/use-Input";
+import useInput from "../../hooks/use-Input";
 import { Actions } from "react-native-router-flux";
 import Input from "../Input";
 import axios from "axios";
 import baseURL from "../../constants/url";
 import ErrMessage from "../ErrorMessage";
+import { Ionicons } from "@expo/vector-icons";
 
 const SignUpForm = () => {
   const [errMessage, setErrMessage] = useState("");
   const [passwordErrorVisible, setPasswordErrorVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {
     value: enteredFirstName,
@@ -84,6 +93,7 @@ const SignUpForm = () => {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     if (
       firstNameIsValid &&
       lastNameIsValid &&
@@ -103,6 +113,7 @@ const SignUpForm = () => {
         password: enteredPassword,
       })
         .then((response) => {
+          setLoading(false);
           if (response.data !== undefined) {
             Actions.SignIn();
           } else {
@@ -110,6 +121,7 @@ const SignUpForm = () => {
           }
         })
         .catch((err) => {
+          setLoading(false);
           const statusCode = err.response.status;
           console.log("status", statusCode);
           console.log("status", err.response.data);
@@ -122,105 +134,118 @@ const SignUpForm = () => {
           }
         });
     } else {
+      setLoading(false);
+
       setErrMessage("Invalid Data Entered or Fill all Fields");
     }
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        onPress={() => Actions.pop()}
-        style={{ position: "absolute", left: 20, top: 50, zIndex: 1 }}
-      >
-        <Image
-          source={require("../../assets/back-arrow.png")}
-          style={{ width: 30, height: 30 }}
+    <View style={styles.containerScroll}>
+      <View style={styles.container}>
+        <TouchableOpacity
+          onPress={() => Actions.pop()}
+          style={{ position: "absolute", top: 50, left: 0 }}
+        >
+          <Ionicons
+            style={styles.icon}
+            name="arrow-back-outline"
+            size={24}
+            color="black"
+          />
+        </TouchableOpacity>
+        <Text style={styles.text}>Quick Sign-Up</Text>
+        <TouchableOpacity style={styles.customButton}>
+          <Image
+            source={require("../../assets/googl.png")}
+            style={styles.buttonIcon}
+          />
+          <Text style={styles.buttonText}>Sign up with Google</Text>
+        </TouchableOpacity>
+        <Text style={styles.text1}>Or use your email address</Text>
+        <Input
+          style={[firstNameIsFocused && !firstNameIsValid && styles.invalid]}
+          placeholder="First Name"
+          keyboardType="First-name"
+          value={enteredFirstName}
+          onChangeText={(text) => firstNameChangeHandler(text)}
+          onBlur={validateFirstNameHandler}
+          onFocus={firstNameFocusHandler}
+          secureTextEntry={false}
         />
-      </TouchableOpacity>
-      <Text style={styles.text}>Quick Sign-Up</Text>
-      <TouchableOpacity style={styles.customButton}>
-        <Image
-          source={require("../../assets/googl.png")}
-          style={styles.buttonIcon}
+        <Input
+          style={[lastNameIsFocused && !lastNameIsValid && styles.invalid]}
+          placeholder="Last Name"
+          keyboardType="last-name"
+          value={enteredLastName}
+          onChangeText={(text) => lastNameChangeHandler(text)}
+          onBlur={validateLastNameHandler}
+          onFocus={lastNameFocusHandler}
+          secureTextEntry={false}
         />
-        <Text style={styles.buttonText}>Sign up with Google</Text>
-      </TouchableOpacity>
-      <Text style={styles.text1}>Or use your email address</Text>
-      <Input
-        style={[firstNameIsFocused && !firstNameIsValid && styles.invalid]}
-        placeholder="First Name"
-        keyboardType="First-name"
-        value={enteredFirstName}
-        onChangeText={(text) => firstNameChangeHandler(text)}
-        onBlur={validateFirstNameHandler}
-        onFocus={firstNameFocusHandler}
-        secureTextEntry={false}
-      />
-      <Input
-        style={[lastNameIsFocused && !lastNameIsValid && styles.invalid]}
-        placeholder="Last Name"
-        keyboardType="last-name"
-        value={enteredLastName}
-        onChangeText={(text) => lastNameChangeHandler(text)}
-        onBlur={validateLastNameHandler}
-        onFocus={lastNameFocusHandler}
-        secureTextEntry={false}
-      />
-      <Input
-        style={[emailIsFocused && !emailIsValid && styles.invalid]}
-        placeholder="Email"
-        keyboardType="email-address"
-        value={enteredEmail}
-        onChangeText={(text) => emailChangeHandler(text)}
-        onBlur={validateEmailHandler}
-        onFocus={emailFocusHandler}
-        secureTextEntry={false}
-      />
-      <Input
-        style={[passwordIsFocused && !passwordIsValid && styles.invalid]}
-        placeholder="Password"
-        secureTextEntry
-        value={enteredPassword}
-        onChangeText={(text) => passwordChangeHandler(text)}
-        onBlur={() => {
-          validatePasswordHandler();
-          setPasswordErrorVisible(true);
-        }}
-        onFocus={() => {
-          passwordFocusHandler();
-          setPasswordErrorVisible(false);
-        }}
-      />
-      {passwordErrorVisible && (
-        <Text style={styles.error}>
-          Use at least one symbol, one numeric, and ten characters
-        </Text>
-      )}
-      <Button
-        title="Sign Up for Unistock"
-        onPress={handleSubmit}
-        style={styles.button}
-        textSize={18}
-      />
-      <ErrMessage
-        style={styles.signUpText}
-        type="authentication"
-        text={errMessage}
-        onEnd={endMessage}
-      />
+        <Input
+          style={[emailIsFocused && !emailIsValid && styles.invalid]}
+          placeholder="Email"
+          keyboardType="email-address"
+          value={enteredEmail}
+          onChangeText={(text) => emailChangeHandler(text)}
+          onBlur={validateEmailHandler}
+          onFocus={emailFocusHandler}
+          secureTextEntry={false}
+        />
+        <Input
+          style={[passwordIsFocused && !passwordIsValid && styles.invalid]}
+          placeholder="Password"
+          secureTextEntry
+          value={enteredPassword}
+          onChangeText={(text) => passwordChangeHandler(text)}
+          onBlur={() => {
+            validatePasswordHandler();
+            setPasswordErrorVisible(true);
+          }}
+          onFocus={() => {
+            passwordFocusHandler();
+            setPasswordErrorVisible(false);
+          }}
+        />
+        {passwordErrorVisible && (
+          <Text style={styles.error}>
+            Use at least one symbol, one numeric, and ten characters
+          </Text>
+        )}
+        {loading && <ActivityIndicator size="small" color="#0000ff" />}
+        <TouchableOpacity
+          style={styles.touchableOpacity}
+          onPress={handleSubmit}
+        >
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>Sign up for UniStock</Text>
+          </View>
+        </TouchableOpacity>
+        <ErrMessage
+          style={styles.signUpText}
+          type="authentication"
+          text={errMessage}
+          onEnd={endMessage}
+        />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  containerScroll: {
+    width: "90%",
+    height: "100%",
+    padding: 20,
+  },
   container: {
     flex: 1,
-    justifyContent: "flex-start",
+    // justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "#fff",
-    padding: 20,
     paddingTop: 0,
-    width: "90%",
+    // width: "90%",
   },
   title: {
     fontSize: 24,
@@ -228,6 +253,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   customButton: {
+    width: "100%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -250,9 +276,14 @@ const styles = StyleSheet.create({
     height: 20,
     marginRight: 5,
   },
+  touchableOpacity: {
+    width: "100%",
+  },
   buttonText: {
     fontSize: 16,
     color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
   },
   text: {
     fontSize: 20,
@@ -274,7 +305,7 @@ const styles = StyleSheet.create({
     // Add any styles needed for the red blinking effect
   },
   button: {
-    width: "70%",
+    width: "100%",
     backgroundColor: "#007bff",
     borderRadius: 5,
     padding: 7,
