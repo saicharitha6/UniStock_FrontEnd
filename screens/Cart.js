@@ -65,7 +65,7 @@ export default function Cart() {
             ]}
           >
             {/* Dividing the total by 100 because Medusa doesn't store numbers in decimal */}
-            ${cart?.total / 100}
+            ₹{cart?.total / 100}
           </Text>
         </View>
         <View style={styles.row}>
@@ -79,7 +79,7 @@ export default function Cart() {
               },
             ]}
           >
-            - ${cart?.discount_total / 100}
+            - ₹{cart?.discount_total / 100}
           </Text>
         </View>
         <View style={[styles.row, styles.total]}>
@@ -92,7 +92,7 @@ export default function Cart() {
               },
             ]}
           >
-            {/* Calculating the total */}$
+            {/* Calculating the total */}₹
             {cart?.total / 100 - cart?.discount_total / 100}
           </Text>
         </View>
