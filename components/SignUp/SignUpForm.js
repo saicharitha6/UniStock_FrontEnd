@@ -31,7 +31,7 @@ const SignUpForm = () => {
     isFocused: firstNameIsFocused,
     reset: firstNameReset,
   } = useInput({
-    validateValue: (value) => value.trim().length >= 5,
+    validateValue: (value) => value.trim().length > 0,
   });
 
   const {
@@ -44,7 +44,7 @@ const SignUpForm = () => {
     isFocused: lastNameIsFocused,
     reset: lastNameReset,
   } = useInput({
-    validateValue: (value) => value.trim().length >= 5,
+    validateValue: (value) => value.trim().length > 0,
   });
 
   const {
@@ -57,7 +57,7 @@ const SignUpForm = () => {
     isFocused: emailIsFocused,
     reset: emailReset,
   } = useInput({
-    validateValue: (value) => value.trim().length >= 3 && value.includes("@"),
+    validateValue: (value) => value.trim().length >= 1 && value.includes("@"),
   });
 
   const {
@@ -71,7 +71,7 @@ const SignUpForm = () => {
     reset: passwordReset,
   } = useInput({
     validateValue: (value) =>
-      value.trim().length >= 10 &&
+      value.trim().length >= 6 &&
       /^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[A-Z])[a-zA-Z0-9!@#$%^&*]+$/.test(
         value
       ),
