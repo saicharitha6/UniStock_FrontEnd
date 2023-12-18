@@ -72,7 +72,9 @@ const SignUpForm = () => {
   } = useInput({
     validateValue: (value) =>
       value.trim().length >= 10 &&
-      /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]+$/.test(value),
+      /^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[A-Z])[a-zA-Z0-9!@#$%^&*]+$/.test(
+        value
+      ),
     // Password-specific validation
   });
 
@@ -208,9 +210,10 @@ const SignUpForm = () => {
             setPasswordErrorVisible(false);
           }}
         />
-        {passwordErrorVisible && (
+        {passwordIsFocused && !passwordIsValid && (
           <Text style={styles.error}>
-            Use at least one symbol, one numeric, and ten characters
+            Use at least one capital letter, one symbol, one numeric, and ten
+            characters
           </Text>
         )}
         {loading && <ActivityIndicator size="small" color="#0000ff" />}
@@ -241,11 +244,9 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    // justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "#fff",
     paddingTop: 0,
-    // width: "90%",
   },
   title: {
     fontSize: 24,
@@ -302,6 +303,8 @@ const styles = StyleSheet.create({
     color: "red",
     marginBottom: 10,
     alignItems: "center",
+    width: "100%",
+    textAlign: "center",
     // Add any styles needed for the red blinking effect
   },
   button: {
