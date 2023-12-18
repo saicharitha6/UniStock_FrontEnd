@@ -216,15 +216,22 @@ const SignUpForm = () => {
             characters
           </Text>
         )}
+
         {loading && <ActivityIndicator size="small" color="#0000ff" />}
         <TouchableOpacity
           style={styles.touchableOpacity}
           onPress={handleSubmit}
         >
           <View style={styles.button}>
-            <Text style={styles.buttonText}>Sign up for UniStock</Text>
+            <Text style={styles.buttonText}>Sign up</Text>
           </View>
         </TouchableOpacity>
+        <View style={styles.signUpText}>
+          <Text>Already have an account? </Text>
+          <Text style={styles.link} onPress={() => Actions.SignIn()}>
+            Sign In
+          </Text>
+        </View>
         <ErrMessage
           style={styles.signUpText}
           type="authentication"
@@ -321,6 +328,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginTop: 50,
     justifyContent: "flex-end",
+  },
+  link: {
+    // marginTop: 20,
+    color: "#007bff",
+    textDecorationLine: "underline",
   },
   invalid: {
     width: "100%",
