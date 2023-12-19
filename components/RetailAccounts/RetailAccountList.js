@@ -10,14 +10,53 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../Header";
 import ManageAccounts from "../../screens/ManageAccounts";
 import { widthToDp } from "rn-responsive-screen";
+import AddAccount from "./AddAccount";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function RetailAccountsList({ accountsList }) {
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [addAccount, setAddAccount] = useState(false);
+  const [accountsArray, setAccountsArray] = useState([]);
+  const [disabledAdd, setDisableAdd] = useState(false);
 
   useEffect(() => {
     console.log(selectedAccount);
-  }, [selectedAccount]);
+    loadAccounts();
+    setDisableAdd(areAllIdsPresent());
+  }, [selectedAccount, addAccount]);
+
+  const loadAccounts = async () => {
+    try {
+      const storedAccounts = await AsyncStorage.getItem("accounts");
+      if (storedAccounts) {
+        setAccountsArray(JSON.parse(storedAccounts));
+      }
+    } catch (error) {
+      console.error("Error loading accounts:", error);
+    }
+  };
+
+  const resetAccounts = async () => {
+    try {
+      await AsyncStorage.clear();
+      setAccountsArray([]); // Clear the state as well
+      console.log("Accounts data reset");
+    } catch (error) {
+      console.error("Error clearing AsyncStorage:", error);
+    }
+  };
+
+  // const isAddAccountEnabled = selectedAccount !== null && areAllIdsPresent();
+
+  const areAllIdsPresent = () => {
+    const accountListIds = accountsList.map((account) => account.id);
+    const accountsArrayIds = accountsArray.map(
+      (account) => account.retailsAccountId
+    );
+
+    // Check if all ids from accountList are present in accountsArray
+    return accountListIds.every((id) => accountsArrayIds.includes(id));
+  };
 
   const handleAccountPress = (account) => {
     // Toggle selection when an account is pressed
@@ -27,6 +66,9 @@ export default function RetailAccountsList({ accountsList }) {
   };
   const addAccountHandler = () => {
     setAddAccount(true);
+  };
+  const selectAccountHandler = () => {
+    setAddAccount(false);
   };
 
   const isAddAccountEnabled = selectedAccount !== null;
@@ -55,12 +97,20 @@ export default function RetailAccountsList({ accountsList }) {
           <Button
             title="Add Account"
             onPress={addAccountHandler}
-            disabled={!isAddAccountEnabled}
+            disabled={disabledAdd || !isAddAccountEnabled}
             style={styles.addButton}
           />
+          <View style={styles.addButton}>
+            <Button title="reset" onPress={resetAccounts} />
+          </View>
         </View>
       ) : (
-        <Text account={selectedAccount}>Add Account</Text>
+        <AddAccount
+          account={selectedAccount}
+          selectAccount={selectAccountHandler}
+        >
+          Add Account
+        </AddAccount>
       )}
     </SafeAreaView>
   );

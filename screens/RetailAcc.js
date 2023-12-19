@@ -1,12 +1,12 @@
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native";
-import RetailLoginForm from "../components/RetailAccount/RetailAccount";
+import RetailLoginForm from "../components/RetailAccounts/AddAccount";
 
 const RetailAcc = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <RetailLoginForm/>
+      <RetailLoginForm />
     </SafeAreaView>
   );
 };
