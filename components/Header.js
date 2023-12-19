@@ -99,6 +99,9 @@ export default function Header({
                   <TouchableOpacity onPress={() => Actions.orders()}>
                     <Text style={styles.dropdownElements}>View Orders</Text>
                   </TouchableOpacity>
+                  <TouchableOpacity onPress={() => Actions.ManageAccounts()}>
+                    <Text style={styles.dropdownElements}>Manage Accounts</Text>
+                  </TouchableOpacity>
                   <TouchableOpacity onPress={handleLogout}>
                     <Text style={styles.dropdownElements}>Logout</Text>
                   </TouchableOpacity>
