@@ -9,6 +9,8 @@ import axios from "axios";
 import baseURL from "./constants/url";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SignIn from "./screens/SignIn";
+import Orders from "./components/Orders/Orders";
+import PlaceOrder from "./screens/PlaceOrder";
 
 export default function App() {
   const getCartId = () => {
@@ -18,8 +20,13 @@ export default function App() {
   };
   const checkCartId = async () => {
     const cartId = await AsyncStorage.getItem("cart_id");
+    
     if (!cartId) {
       getCartId();
+    } else{
+      axios.get(`${baseURL}/store/orders/cart/${cartId}`).then((res) => {
+          getCartId();
+      });
     }
   };
 
@@ -35,6 +42,8 @@ export default function App() {
           <Scene key="products" component={Products} hideNavBar />
           <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
           <Scene key="cart" component={Cart} hideNavBar />
+          <Scene key="orders" component={Orders} hideNavBar />
+          <Scene key="PlaceOrder" component={PlaceOrder} hideNavBar />
           {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
         </Stack>
       </Router>
