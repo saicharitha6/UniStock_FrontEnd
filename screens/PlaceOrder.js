@@ -38,7 +38,7 @@ const PlaceOrder = () => {
       axios.post(baseURL + "/store/carts/" + cartId + "/complete").then(async (res)=>{
         let orders_cartIds=[];
         
-        if(existing_order_cartIds != ""){
+        if(existing_order_cartIds != null){
           orders_cartIds = JSON.parse(existing_order_cartIds);
         }
         orders_cartIds.push(cartId);
