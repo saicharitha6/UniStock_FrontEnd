@@ -1,21 +1,23 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import { widthToDp } from "rn-responsive-screen";
 
 export default function Button({ title, onPress, style, textSize, large }) {
   return (
-    <View style={[styles.container, style, large && styles.large]}>
+    <TouchableOpacity
+      style={[styles.container, style, large && styles.large]}
+      onPress={onPress}
+    >
       <Text
         style={[
           styles.text,
           { fontSize: textSize ? textSize : widthToDp(3.5) },
           ,
         ]}
-        onPress={onPress}
       >
         {title}
       </Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 
@@ -27,7 +29,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 59,
-    margin:8,
   },
   large: {
     width: "100%",
