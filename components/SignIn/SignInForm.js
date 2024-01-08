@@ -7,7 +7,6 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
-import Button from "../Button";
 import useInput from "../../hooks/use-Input";
 import WelcomeText from "./WelcomeText";
 import Input from "../Input";
@@ -65,6 +64,7 @@ const SignInForm = () => {
   }
 
   const handleForgetPasswordPress = () => {
+    // Navigate to the "RequestPasswordReset" scene
     Actions.RequestPasswordReset();
   };
 
@@ -80,6 +80,7 @@ const SignInForm = () => {
           setLoading(false); // Set loading to false after successful request
 
           if (res.data !== undefined) {
+            // Navigate to the "products" scene
             Actions.products();
           } else {
             setErrMessage("Unexpected response structure");
@@ -105,6 +106,13 @@ const SignInForm = () => {
             });
           } else if (statusCode === 400) {
             setErrMessage("Invalid data");
+            resetAll();
+          } else if (statusCode === 404) {
+            // Handle not found error (if needed)
+            setErrMessage("User not found");
+            resetAll();
+          } else {
+            setErrMessage("Failed to sign in. Please try again.");
             resetAll();
           }
         });

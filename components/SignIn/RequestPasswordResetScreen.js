@@ -7,7 +7,6 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
-import Button from "../Button";
 import useInput from "../../hooks/use-Input";
 import WelcomeText from "./WelcomeText";
 import Input from "../Input";
@@ -37,97 +36,44 @@ const RequestPasswordResetScreen = () => {
     setErrMessage("");
   }
 
-  function resetAll() {
-    emailReset();
-  }
-
   const handleRequestPasswordReset = () => {
     if (!enteredEmail || !emailIsValid) {
-      // Handle the case where the email is not entered or is not valid
       setErrMessage("Please enter a valid email address");
       return;
     }
   
-    fetch(`${baseURL}/store/customers/password-token`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-      }),
-    })
-      .then(response => {
+    axios
+      .post(
+        `${baseURL}/store/customers/password-token`,
+        {
+          email: enteredEmail,
+        },
+        {
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
         if (response.ok) {
-          // Request successful, navigate to the verification screen
           return response.json();
         } else if (response.status === 401) {
-          throw new Error('User is not authorized. Must log in first');
-        } else if (response.status === 404) {
-          throw new Error('Email not found');
+          throw new Error("User is not authorized. Must log in first");
         } else {
-          throw new Error('Failed to request password reset. Please try again.');
+          throw new Error("Failed to request password reset. Please try again.");
         }
       })
-      .then(data => {
+      .then((data) => {
         // Handle the data if needed
-        Actions.ResetPasswordVerification({ email });
+        Actions.ResetPasswordVerification({ email: enteredEmail });
       })
-      .catch(error => {
-        // Handle errors
-        endMessage(); // clear error message
-        console.error('Error:', error.message);
+      .catch((error) => {
+        endMessage();
+        console.error("Error:", error.message);
       });
-  };
+  }; 
   
-
-  // const handleSubmit = () => {
-  //   setLoading(true); // Set loading to true before making the request
-
-  //   if (emailIsValid) {
-  //     authenticationHandler({
-  //       email: enteredEmail,
-  //     })
-  //       .then((res) => {
-  //         setLoading(false); // Set loading to false after successful request
-
-  //         if (res.data !== undefined) {
-  //           Actions.products();
-  //         } else {
-  //           setErrMessage("Unexpected response structure");
-  //           resetAll();
-  //         }
-  //       })
-  //       .catch((err) => {
-  //         setLoading(false); // Set loading to false after failed request
-
-  //         const statusCode = err.response.status;
-
-  //         if (statusCode === 401) {
-  //           setLoading(true);
-  //           axios.get(`${baseURL}/store/auth/${enteredEmail}`).then((res) => {
-  //             setLoading(false);
-  //             if (res.data.exists) {
-  //               passwordReset();
-  //               setErrMessage("Incorrect password");
-  //             } else {
-  //               resetAll();
-  //               setErrMessage("Invalid credentials.");
-  //             }
-  //           });
-  //         } else if (statusCode === 400) {
-  //           setErrMessage("Invalid data");
-  //           resetAll();
-  //         }
-  //       });
-  //   } else {
-  //     setLoading(false); // Set loading to false if validation fails
-  //     setErrMessage("Invalid data");
-  //     resetAll();
-  //   }
-  // };
-
   return (
     <View style={styles.container}>
       <WelcomeText />
