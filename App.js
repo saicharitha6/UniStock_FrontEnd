@@ -13,6 +13,8 @@ import Orders from "./components/Orders/Orders";
 import PlaceOrder from "./screens/PlaceOrder";
 import SignUp from "./screens/SignUp";
 import ManageAccounts from "./screens/ManageAccounts";
+import RequestPasswordResetScreen from "./components/SignIn/RequestPasswordResetScreen";
+import ResetPasswordVerificationScreen from "./components/SignIn/ResetPasswordVerificationScreen";
 
 export default function App() {
   const getCartId = async () => {
@@ -58,6 +60,13 @@ export default function App() {
         <Stack key="root">
           <Scene key="SignIn" component={SignIn} hideNavBar />
           <Scene key="SignUp" component={SignUp} hideNavBar />
+          <Scene key="RequestPasswordReset" component={RequestPasswordResetScreen} hideNavBar />
+          <Scene
+            name="ResetPasswordVerification"
+            component={ResetPasswordVerificationScreen}
+            hideNavBar
+          />
+
           <Scene key="products" component={Products} hideNavBar />
           <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
           <Scene key="cart" component={Cart} hideNavBar />

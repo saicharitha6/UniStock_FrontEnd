@@ -64,6 +64,10 @@ const SignInForm = () => {
     emailReset();
   }
 
+  const handleForgetPasswordPress = () => {
+    Actions.RequestPasswordReset();
+  };
+
   const handleSubmit = () => {
     setLoading(true); // Set loading to true before making the request
 
@@ -139,7 +143,9 @@ const SignInForm = () => {
       />
       {loading && <ActivityIndicator size="small" color="#0000ff" />}
       <View style={styles.forgetPasswordContainer}>
-        <Text style={styles.forgetPassword}>Forget password</Text>
+        <TouchableOpacity onPress={handleForgetPasswordPress}>
+          <Text style={styles.forgetPassword}>Forget password</Text>
+        </TouchableOpacity>
       </View>
       <TouchableOpacity style={styles.touchableOpacity} onPress={handleSubmit}>
         <View style={styles.button}>
